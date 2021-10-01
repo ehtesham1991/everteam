@@ -1,0 +1,63 @@
+<h3>Upload File</h3>
+
+<form [formGroup]="fileUploadForm" (ngSubmit)="onFormSubmit()">
+    <div class="row">
+        <div class="col-sm-12">
+            <div>
+                <h6 class="head-title margin-top-8"><span>UPLOAD</span></h6>
+            </div>
+        </div>
+
+        <div class="col-sm-6 text-center">
+
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="customFile" name="myfile"
+                    (change)="onFileSelect($event)" #UploadFileInput>
+                <label class="custom-file-label" for="customFile">{{fileInputLabel || 'Choose File'}}</label>
+            </div>
+
+        </div>
+        <div class="col-sm-6 text-center">
+            <button class="btn btn-primary" type="submit">Upload</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped" *ngIf="fileFlag == true">
+    <thead>
+      <tr>
+        <th scope="col">File Name</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let obj of fileObj">
+        <td>{{obj.name}}</td>
+        <td><button type ="submit" (click)="onContinue($event,obj.id)">Continue</button></td>
+      </tr>
+    </tbody>
+  </table>
+<br>
+<br>
+  <table class="table table-dark" *ngIf="excelFlag == true">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Name</th>
+        <th scope="col">age</th>
+        <th scope="col">gender</th>
+        <th scope="col">mobile</th>
+        <th scope="col">email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rowObj">
+        <td>{{row.id}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.age}}</td>
+        <td>{{row.gender}}</td>
+        <td>{{row.mobile}}</td>
+        <td>{{row.email}}</td>
+      </tr>
+    </tbody>
+  </table>

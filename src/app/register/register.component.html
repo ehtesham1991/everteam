@@ -1,0 +1,24 @@
+<div fxLayoutAlign="center center" fxFlexFill class="main-div">
+    <mat-card fxFlex="25">
+        <mat-toolbar color="primary">Register</mat-toolbar>
+        <form fxLayoutAlign="stretch" fxLayout="column" class="login-form">
+            <mat-form-field >
+              <input matInput placeholder="Username" [(ngModel)]="name" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+          
+            <mat-form-field >
+                <input matInput type ="password" placeholder="Password"  [(ngModel)]="password" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+              <mat-radio-group aria-label="Select role" [(ngModel)]="role" [ngModelOptions]="{standalone: true}">
+                <mat-radio-button value="ROLE_READ">read</mat-radio-button>
+                <mat-radio-button value="ROLE_MIGRATE">migrate</mat-radio-button>
+              </mat-radio-group>
+              <button mat-raised-button type ="submit" (click)='registerUser()'>Register</button>
+          </form>
+          <div>
+              <br>
+              <br>
+          <p fxLayoutAlign="center" >Already registered ? <button mat-raised-button  type ="submit" (click)='login()'>Sign In</button></p>
+        </div>
+    </mat-card>
+</div>
