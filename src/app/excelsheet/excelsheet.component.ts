@@ -100,12 +100,6 @@ console.log('get excel-row-url', finalUrl);
       });
   }
 
-  onRowSelect(e, id: String) {
-    if (e.target.checked) {
-      console.log("Radio button triggered")
-      console.log("Row id " + id  + " selected");
-    }
-  }
 
   deleteRow(rowId : string){
     let counter : any;
@@ -209,5 +203,26 @@ this.http.post(finalUrl,data, {
         err => {
         }
       );
+  }
+
+  saveIntoDatabase(){
+    
+    let counter : any;
+let url = 'http://localhost:8080/api/excel-files/';
+let conUrl = url.concat(this.id);
+let finalUrl = conUrl.concat('/save');
+console.log('save-url', finalUrl);
+
+this.http.post(finalUrl,null, {
+  headers: {         
+    'Authorization': this.headerToken
+  }
+})
+  .subscribe(responsedata => {
+  },
+    err => {
+    }
+  );
+    
   }
 }

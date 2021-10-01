@@ -4,11 +4,13 @@
 
     
     <div class="col-md-12 ">
+      <div>
+                  <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#popUpModal">Add</button>
+      </div>
         <div class="table-header-color table-responsive top-space">
           <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
             <thead>
               <tr>
-                <th valign="top">Select</th>
                 <th valign="top">Name</th>
                 <th valign="top">Age</th>
                 <th valign="top">Gender</th>
@@ -19,8 +21,6 @@
             </thead>
             <tbody>
               <tr *ngFor="let a of rowObj">
-                <td style="text-align:center"><input type="radio" name ="excelRadio"
-                  (click)="onRowSelect($event,a.id)" /></td>
                 <td style="text-align:center">{{a.name}}</td>
                 <td style="text-align:center">{{a.age}}</td>
                 <td style="text-align:center">{{a.gender}}</td>
@@ -34,12 +34,16 @@
             </tbody>
           </table>
         </div>
-        <div>
-                    <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#popUpModal">Add</button>
-        </div>
       </div>
 
   </div>
+
+  <div class="col-md-12 ">
+    <div>
+                <button class="btn btn-primary" type="submit" (click)="saveIntoDatabase()">Save</button>
+    </div>
+  </div>
+
 
 
   <div>
