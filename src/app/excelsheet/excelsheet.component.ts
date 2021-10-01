@@ -17,6 +17,12 @@ export class ExcelsheetComponent implements OnInit {
   gridApi : any;
   columnApi : any;
   rowSelection;
+  name : '';
+  age: '';
+  gender : '';
+  mobile:'';
+  email:'';
+  editedRowId:'';
 
   columnDefs =[
     { headerName: "Name", field: "name" , sortable : true , filter :true, editable : true},
@@ -44,8 +50,8 @@ export class ExcelsheetComponent implements OnInit {
     this.getExcelData();
   }
 
-  getExcelFile(){
-    let url = 'http://localhost:8080/api/excel-files/2'
+  /*getExcelFile(){
+    let url = 'http://localhost:8080/api/excel-files/'.concat(this.id)
     //  this.http.get<any>(url, {headers:headers, responseType: 'blob'});
     this.http.get(url,{
       headers: {
@@ -61,13 +67,15 @@ export class ExcelsheetComponent implements OnInit {
         // saveAs(Response.body, fileName)
         // console.log(Response)
       });
-  }
+  }*/
 
   getExcelData(){
     let counter : any;
 let url = 'http://localhost:8080/api/excel-files/';
 let conUrl = url.concat(this.id);
 let finalUrl = conUrl.concat('/rows')
+
+console.log('get excel-row-url', finalUrl);
       
       this.http.get(finalUrl, {
         headers: {
@@ -80,8 +88,9 @@ let finalUrl = conUrl.concat('/rows')
         // console.log(Response);
         if(Response!=null && Response!= undefined){
           // this.rowObj = Response["rows"];
+          ;
         let responseLength = Object.keys(Response).length;     
-        for (let i = 0; i <= responseLength; i++) {
+        for (let i = 0; i <= Response["rows"].length; i++) {
           counter = { id: Response["rows"][i]["id"], name: Response["rows"][i]["name"], age: Response["rows"][i]["age"], gender: Response["rows"][i]["gender"], mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
           
           this.rowObj.push(counter);
@@ -103,7 +112,7 @@ let finalUrl = conUrl.concat('/rows')
 let url = 'http://localhost:8080/api/excel-files/';
 let conUrl = url.concat(this.id);
 let finalUrl = conUrl.concat('/rows/').concat(rowId);
-console.log("url " + finalUrl);
+console.log("delete-row-url " + finalUrl);
 this.http.delete(finalUrl, {
   headers: {
     'page': '1',
@@ -117,18 +126,88 @@ this.http.delete(finalUrl, {
     // this.rowObj = Response["rows"];
   let responseLength = Object.keys(Response).length;  
   this.rowObj = [];   
-  for (let i = 0; i <= responseLength; i++) {
-    counter = { id: Response["rows"][i]["id"], name: Response["rows"][i]["name"], age: Response["rows"][i]["age"], gender: Response["rows"][i]["gender"], mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
+  // for (let i = 0; i <= responseLength; i++) {
+  //   counter = { id: Response["rows"][i]["id"], name: Response["rows"][i]["name"], age: Response["rows"][i]["age"], gender: Response["rows"][i]["gender"], mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
     
-    this.rowObj.push(counter);
+    this.rowObj = Response["rows"];
+  
   }
-  }
-console.log()
+// console.log()
 });
   }
 
-  onGridReady(params){
-    this.gridApi = params.api;
-    this.columnApi = params.columnApi;
+  onAddRow(){
+    let counter : any;
+let url = 'http://localhost:8080/api/excel-files/';
+let conUrl = url.concat(this.id);
+let finalUrl = conUrl.concat('/rows');
+console.log('addrow-url', finalUrl);
+
+let data = {
+  "name": this.name,
+  "email": this.email,
+  "mobile": this.mobile,
+  "age": this.age,
+  "gender": this.gender
+};
+this.http.post(finalUrl,data, {
+  headers: {
+    'page': '1',
+    'size': '30',          
+    'Authorization': this.headerToken
+  }
+})
+  .subscribe(responsedata => {
+    this.rowObj = [];
+      this.rowObj=responsedata["rows"];
+  },
+    err => {
+    }
+  );
+    
+  }
+
+  getDetailForId(rowId : string){
+    for(let i = 0; i <= this.rowObj.length; i++){
+      if(rowId == this.rowObj[i].id){
+        console.log("data Found");
+        this.name = this.rowObj[i].name;
+        this.age = this.rowObj[i].age;
+        this.gender = this.rowObj[i].gender;
+        this.mobile = this.rowObj[i].mobile;
+        this.email = this.rowObj[i].email;
+        this.editedRowId = this.rowObj[i].id;
+      }
+    }
+   
+    
+  }
+
+  updateRow(){
+ 
+    let url = 'http://localhost:8080/api/excel-files/';
+    let conUrl = url.concat(this.id);
+    let finalUrl = conUrl.concat('/rows/').concat(this.editedRowId);
+    console.log('update-row-url', finalUrl);
+    let data = {
+      "name": this.name,
+      "email": this.email,
+      "mobile": this.mobile,
+      "age": this.age,
+      "gender": this.gender
+    };
+    this.http.put(finalUrl,data, {
+      headers: {
+        'page': '1',
+        'size': '30',          
+        'Authorization': this.headerToken
+      }
+    }).subscribe(responsedata => {
+        this.rowObj = [];
+          this.rowObj=responsedata["rows"];
+      },
+        err => {
+        }
+      );
   }
 }

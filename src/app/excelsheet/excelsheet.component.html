@@ -27,7 +27,7 @@
                 <td style="text-align:center">{{a.mobile}}</td>
                 <td style="text-align:center">{{a.email}}</td>
                 <td style="text-align:center"><div class="col-sm-6 text-center">
-                  <button class="btn btn-primary" type="submit">Edit</button>
+                  <button class="btn btn-primary" type="submit" (click)="getDetailForId(a.id)" data-toggle="modal" data-target="#popUpModalEdit">Edit</button>
                   <button class="btn btn-primary" type="submit" (click)="deleteRow(a.id)" >Delete</button>
               </div></td>
               </tr>
@@ -53,22 +53,76 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-12 ">
-                <input type = "text" name = "name" placeholder = "name" ngModel>
-                  <br/>
-                <input type = "text" name = "age" placeholder = "age" ngModel>
-                  <br/>
-                  <input type = "text" name = "gender" placeholder = "gender" ngModel>
-                    <br/>
-                    <input type = "text" name = "mobile" placeholder = "mobile" ngModel>
-                      <br/>
-                      <input type = "text" name = "email" placeholder = "email" ngModel>
-                        <br/>
+              <div class="col-md-3 mar-bot">
+                <input type = "text" name = "name" placeholder = "name" [(ngModel)]="name">
               </div>
+              <br>
+              <div class="col-md-3 mar-bot">
+                <input type = "text" name = "age" placeholder = "age" [(ngModel)]="age">
+              </div>
+              <br>
+              <div class="col-md-3 mar-bot">
+                  <input type = "text" name = "gender" placeholder = "gender" [(ngModel)]="gender">
+                </div>
+                <br>
+                <div class="col-md-3 mar-bot">
+                    <input type = "text" name = "mobile" placeholder = "mobile" [(ngModel)]="mobile">
+                  </div>
+                  <br>
+                  <div class="col-md-3 mar-bot">
+                      <input type = "text" name = "email" placeholder = "email" [(ngModel)]="email">
+                       
+              </div>
+              <br>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary"  data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="onAddRow()" data-dismiss="modal">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div id="popUpModalEdit" class="modal fade " tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title heading3 blue-c font-weight-bold"> <span><i class="fa fa-hand-o-right black"></i>
+              </span>Update fields</div>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-3 mar-bot">
+                <input type = "text" name = "name" placeholder = "name" [(ngModel)]="name">
+              </div>
+              <br>
+              <div class="col-md-3 mar-bot">
+                <input type = "text" name = "age" placeholder = "age" [(ngModel)]="age">
+              </div>
+              <br>
+              <div class="col-md-3 mar-bot">
+                  <input type = "text" name = "gender" placeholder = "gender" [(ngModel)]="gender">
+                </div>
+                <br>
+                <div class="col-md-3 mar-bot">
+                    <input type = "text" name = "mobile" placeholder = "mobile" [(ngModel)]="mobile">
+                  </div>
+                  <br>
+                  <div class="col-md-3 mar-bot">
+                      <input type = "text" name = "email" placeholder = "email" [(ngModel)]="email">
+                      <input type = "hidden" name = "id"  [(ngModel)]="id" >
+                       
+              </div>
+              <br>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="updateRow()" data-dismiss="modal">Confirm</button>
           </div>
         </div>
       </div>
