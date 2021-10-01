@@ -38,11 +38,7 @@
 
   </div>
 
-  <div class="col-md-12 ">
-    <div>
-                <button class="btn btn-primary" type="submit" (click)="saveIntoDatabase()">Save</button>
-    </div>
-  </div>
+  
 
 
 
@@ -132,5 +128,22 @@
       </div>
     </div>
   </div>
+  <div >
+    <div>
+      <p>Page {{pageNumber}} of {{totalPage}}</p>
+    </div>
+    <button class="btn btn-primary" type="submit" (click)="firstPage()">First Page</button>
+    <button class="btn btn-primary" type="submit" (click)="nextPage()">Next Page</button>
+    <button class="btn btn-primary" type="submit" (click)="previosPage()">Previous page</button>
+    <button class="btn btn-primary" type="submit" (click)="lastPage()">Last page</button>
+</div>
 
+<br>
+<br>
+
+<div class="col-md-12 ">
+  <div>
+              <button class="btn btn-primary" type="submit" (click)="saveIntoDatabase()">Save</button>
+  </div>
+</div>
 </div>

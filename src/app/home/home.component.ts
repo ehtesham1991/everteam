@@ -13,7 +13,6 @@ export class HomeComponent implements OnInit {
   @ViewChild('UploadFileInput', { static: false }) uploadFileInput: ElementRef;
   fileUploadForm: FormGroup;
   fileInputLabel: string;
-  fileFlag : boolean;  
   excelFlag : boolean;
   fileObj: any = [];
   rowObj:any =[];
@@ -30,7 +29,8 @@ export class HomeComponent implements OnInit {
     this.fileUploadForm = this.formBuilder.group({
       myfile: ['']
     });
-    this.fileFlag = false;
+    this.fileObj =[];
+    this.displayListOfExcels();
   }
 
   onFileSelect(event) {
@@ -65,12 +65,9 @@ export class HomeComponent implements OnInit {
          'Authorization': this.headerToken
         }
       }).subscribe(response => {
-        console.log(response);
-        console.log(response.status);
-          // Reset the file input
-          console.log("--------------");
           this.uploadFileInput.nativeElement.value = "";
           this.fileInputLabel = undefined;
+          this.fileObj =[];
           this.displayListOfExcels();
 
       }, error => {
@@ -80,7 +77,6 @@ export class HomeComponent implements OnInit {
 
   displayListOfExcels(){
     let counter : any;
-    this.fileFlag = true;
     let excelFileUrl = 'http://localhost:8080/api/excel-files'
     this.http.get(excelFileUrl,{
       headers: {
@@ -88,17 +84,13 @@ export class HomeComponent implements OnInit {
       }}).subscribe(Response => {
       console.log(Response);
       if(Response!=null && Response!= undefined){
-        let noOfFiles = Object.keys(Response).length;
-        console.log("***************")
-        console.log(noOfFiles);        
+        let noOfFiles = Object.keys(Response).length;      
         for (let i = 0; i <= noOfFiles; i++) {
-          counter = { id: Response[i]["id"], name: Response[i]["name"], draft: Response[i]["name"], createdOn: Response[i]["createdOn"], modifiedOn: Response[i]["modifiedOn"]}
-          
+          counter = { id: Response[i]["id"], name: Response[i]["name"], status: Response[i]["status"], createdOn: Response[i]["createdOn"], modifiedOn: Response[i]["modifiedOn"]}
           this.fileObj.push(counter);
         }
       }
     })
-    
   }
 
   onContinue(e, id: String) {
@@ -106,27 +98,5 @@ export class HomeComponent implements OnInit {
       console.log("ITEM Selected ==== > " + id);
       sessionStorage.setItem('fileId', id.toString());
       this._router.navigateByUrl('excelsheet');
-      // let url = 'http://localhost:8080/api/excel-files/';
-      // let finalUrl = url.concat(id.toString());
-      
-      // this.http.get(finalUrl, {
-      //   headers: {
-      //     'page': '1',
-      //     'size': '1'
-      //   }
-      // }).subscribe(Response => {
-      //   console.log("============== Row Response ==========")
-      //   console.log(Response);
-      //   if(Response!=null && Response!= undefined){
-      //     let noOfRows = Object.keys(Response).length;
-      //     console.log("***************")
-      //     console.log(noOfRows);
-      //     for (let i = 0; i <= noOfRows; i++) {
-      //       counter = { id: Response["rows"][i]["id"],name: Response["rows"][i]["name"],age: Response["rows"][i]["age"],gender: Response["rows"][i]["gender"],mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
-      //       this.rowObj.push(counter);
-      //     }
-      //   }
-
-      // });
   }
 }

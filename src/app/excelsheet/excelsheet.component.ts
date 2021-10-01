@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { saveAs } from 'file-saver';
@@ -23,6 +24,9 @@ export class ExcelsheetComponent implements OnInit {
   mobile:'';
   email:'';
   editedRowId:'';
+  pageNumber : number = 1;
+  pageSize : number = 1;
+  totalPage : string;
 
   columnDefs =[
     { headerName: "Name", field: "name" , sortable : true , filter :true, editable : true},
@@ -35,7 +39,7 @@ export class ExcelsheetComponent implements OnInit {
   rowData : any;; 
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private _router: Router) {
     
     this.id = sessionStorage.getItem('fileId');
     console.log("ID is == >  " + this.id);
@@ -46,7 +50,7 @@ export class ExcelsheetComponent implements OnInit {
     this.token = sessionStorage.getItem("token");
     this.role = sessionStorage.getItem("roles");
     this.headerToken = ("Bearer ").concat(this.token);
-    // this.getExcelFile();
+    this.pageNumber = 1;
     this.getExcelData();
   }
 
@@ -79,19 +83,21 @@ console.log('get excel-row-url', finalUrl);
       
       this.http.get(finalUrl, {
         headers: {
-          'page': '1',
-          'size': '30',          
-          'Authorization': this.headerToken
-        }
+          'page': this.pageNumber.toString(),
+          'size': this.pageSize.toString(),          
+          'Authorization': this.headerToken,
+        },
+        observe: 'response'
       }).subscribe(Response => {
         console.log("============== Row Response ==========")
-        // console.log(Response);
-        if(Response!=null && Response!= undefined){
-          // this.rowObj = Response["rows"];
+        this.totalPage = Response.headers.get('X-Total-Pages');
+        console.log('total-page', this.totalPage);
+        if(Response.body!=null && Response.body!= undefined){
+          this.rowObj = [];
           ;
-        let responseLength = Object.keys(Response).length;     
-        for (let i = 0; i <= Response["rows"].length; i++) {
-          counter = { id: Response["rows"][i]["id"], name: Response["rows"][i]["name"], age: Response["rows"][i]["age"], gender: Response["rows"][i]["gender"], mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
+        let responseLength = Object.keys(Response.body).length;     
+        for (let i = 0; i <= Response.body["rows"].length; i++) {
+          counter = { id: Response.body["rows"][i]["id"], name: Response.body["rows"][i]["name"], age: Response.body["rows"][i]["age"], gender: Response.body["rows"][i]["gender"], mobile: Response.body["rows"][i]["mobile"],email: Response.body["rows"][i]["email"]}
           
           this.rowObj.push(counter);
         }
@@ -109,15 +115,14 @@ let finalUrl = conUrl.concat('/rows/').concat(rowId);
 console.log("delete-row-url " + finalUrl);
 this.http.delete(finalUrl, {
   headers: {
-    'page': '1',
-    'size': '30',          
+    'page': this.pageNumber.toString(),
+    'size': this.pageSize.toString(),          
     'Authorization': this.headerToken
   }
 }).subscribe(Response => {
   console.log("==============DELETE Row Response ==========")
   // console.log(Response);
   if(Response!=null && Response!= undefined){
-    // this.rowObj = Response["rows"];
   let responseLength = Object.keys(Response).length;  
   this.rowObj = [];   
   // for (let i = 0; i <= responseLength; i++) {
@@ -146,8 +151,8 @@ let data = {
 };
 this.http.post(finalUrl,data, {
   headers: {
-    'page': '1',
-    'size': '30',          
+    'page': this.pageNumber.toString(),
+    'size': this.pageSize.toString(),       
     'Authorization': this.headerToken
   }
 })
@@ -192,8 +197,8 @@ this.http.post(finalUrl,data, {
     };
     this.http.put(finalUrl,data, {
       headers: {
-        'page': '1',
-        'size': '30',          
+        'page': this.pageNumber.toString(),
+        'size': this.pageSize.toString(),     
         'Authorization': this.headerToken
       }
     }).subscribe(responsedata => {
@@ -219,10 +224,39 @@ this.http.post(finalUrl,null, {
   }
 })
   .subscribe(responsedata => {
+    this._router.navigateByUrl('home');
   },
     err => {
     }
   );
     
+  }
+
+  firstPage(){
+    if(this.pageNumber != 1) {
+      this.pageNumber = 1;
+      this.getExcelData();
+    }
+  }
+
+  nextPage(){
+    if(parseInt(this.totalPage) > this.pageNumber) {
+    this.pageNumber = this.pageNumber + 1;
+    this.getExcelData();
+    }
+  }
+  
+  previosPage(){
+    if(this.pageNumber > 1) {
+    this.pageNumber = this.pageNumber - 1;
+    this.getExcelData();
+    }
+  }
+  
+  lastPage(){
+  if(this.pageNumber != parseInt(this.totalPage)) {
+    this.pageNumber = parseInt(this.totalPage);
+    this.getExcelData();
+    }
   }
 }

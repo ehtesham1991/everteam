@@ -23,17 +23,23 @@
     </div>
 </form>
 
-<table class="table table-striped" *ngIf="fileFlag == true">
+<table class="table table-striped">
     <thead>
       <tr>
         <th scope="col">File Name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Created On</th>
+        <th scope="col">Modified On</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let obj of fileObj">
         <td>{{obj.name}}</td>
-        <td><button type ="submit" (click)="onContinue($event,obj.id)">Continue</button></td>
+        <td>{{obj.status}}</td>
+        <td>{{obj.createdOn}}</td>
+        <td>{{obj.modifiedOn}}</td>
+        <td><button type ="submit" (click)="onContinue($event,obj.id)">Open</button></td>
       </tr>
     </tbody>
   </table>

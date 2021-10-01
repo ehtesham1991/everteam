@@ -30,7 +30,8 @@ export class RegisterComponent implements OnInit {
     let registrationUrl = 'http://localhost:8080/auth/user/register';
     this.http.post(registrationUrl, params)
       .subscribe(responsedata => {
-        
+    this.login();
+    alert('Registration Successfull');
       },
         err => {
         }
