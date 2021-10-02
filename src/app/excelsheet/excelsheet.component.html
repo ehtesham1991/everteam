@@ -18,21 +18,21 @@
           <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
             <thead>
               <tr>
-                <th valign="top">Name</th>
-                <th valign="top">Age</th>
-                <th valign="top">Gender</th>
-                <th valign="top">Mobile</th>
-                <th valign="top">Email</th>
+                <th valign="top">File Name</th>
+                <th valign="top">File Type</th>
+                <th valign="top">Path</th>
+                <th valign="top">Last Modified On</th>
+                <th valign="top">Modified By</th>
                 <th valign="top">Action</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let a of rowObj">
-                <td style="text-align:center">{{a.name}}</td>
-                <td style="text-align:center">{{a.age}}</td>
-                <td style="text-align:center">{{a.gender}}</td>
-                <td style="text-align:center">{{a.mobile}}</td>
-                <td style="text-align:center">{{a.email}}</td>
+                <td style="text-align:center">{{a.fileName}}</td>
+                <td style="text-align:center">{{a.fileType}}</td>
+                <td style="text-align:center">{{a.fileLocation}}</td>
+                <td style="text-align:center">{{a.fileLastModifiedOn}}</td>
+                <td style="text-align:center">{{a.fileModifiedBy}}</td>
                 <td style="text-align:center"><div class="col-sm-6 text-center">
                   <button class="btn btn-primary" type="submit" (click)="getDetailForId(a.id)" data-toggle="modal" data-target="#popUpModalEdit" style=" padding:5px;">Edit</button>
                   <button class="btn btn-primary" type="submit" (click)="deleteRow(a.id)" style=" padding:5px;" >Delete</button>
@@ -61,23 +61,23 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-3 mar-bot">
-                <input type = "text" name = "name" placeholder = "name" [(ngModel)]="name">
+                <input type = "text" name = "fileName" placeholder = "File Name" [(ngModel)]="fileName">
               </div>
               <br>
               <div class="col-md-3 mar-bot">
-                <input type = "text" name = "age" placeholder = "age" [(ngModel)]="age">
+                <input type = "text" name = "fileType" placeholder = "File Type" [(ngModel)]="fileType">
               </div>
               <br>
               <div class="col-md-3 mar-bot">
-                  <input type = "text" name = "gender" placeholder = "gender" [(ngModel)]="gender">
+                  <input type = "text" name = "fileLocation" placeholder = "Path" [(ngModel)]="fileLocation">
                 </div>
                 <br>
                 <div class="col-md-3 mar-bot">
-                    <input type = "text" name = "mobile" placeholder = "mobile" [(ngModel)]="mobile">
+                    <input type = "text" name = "fileLastModifiedOn" placeholder = "Last Modified On" [(ngModel)]="fileLastModifiedOn">
                   </div>
                   <br>
                   <div class="col-md-3 mar-bot">
-                      <input type = "text" name = "email" placeholder = "email" [(ngModel)]="email">
+                      <input type = "text" name = "fileModifiedBy" placeholder = "Modified By" [(ngModel)]="fileModifiedBy">
                        
               </div>
               <br>
@@ -104,23 +104,23 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-3 mar-bot">
-                <input type = "text" name = "name" placeholder = "name" [(ngModel)]="name">
+                <input type = "text" name = "fileName" placeholder = "name" [(ngModel)]="fileName">
               </div>
               <br>
               <div class="col-md-3 mar-bot">
-                <input type = "text" name = "age" placeholder = "age" [(ngModel)]="age">
+                <input type = "text" name = "fileType" placeholder = "fileType" [(ngModel)]="fileType">
               </div>
               <br>
               <div class="col-md-3 mar-bot">
-                  <input type = "text" name = "gender" placeholder = "gender" [(ngModel)]="gender">
+                  <input type = "text" name = "fileLocation" placeholder = "fileLocation" [(ngModel)]="fileLocation">
                 </div>
                 <br>
                 <div class="col-md-3 mar-bot">
-                    <input type = "text" name = "mobile" placeholder = "mobile" [(ngModel)]="mobile">
+                    <input type = "text" name = "fileLastModifiedOn" placeholder = "fileLastModifiedOn" [(ngModel)]="fileLastModifiedOn">
                   </div>
                   <br>
                   <div class="col-md-3 mar-bot">
-                      <input type = "text" name = "email" placeholder = "email" [(ngModel)]="email">
+                      <input type = "text" name = "fileModifiedBy" placeholder = "fileModifiedBy" [(ngModel)]="fileModifiedBy">
                       <input type = "hidden" name = "id"  [(ngModel)]="id" >
                        
               </div>
@@ -153,6 +153,12 @@
 <div class="col-md-12 ">
   <div>
               <button class="btn btn-primary" [attr.disabled]="role == 'ROLE_READ' ? true : null" type="submit" (click)="saveIntoDatabase()">Save</button>
+  </div>
+</div>
+<br>
+<div class="col-md-12 ">
+  <div>
+              <button class="btn btn-primary" type="submit" (click)="logOut()">Logout</button>
   </div>
 </div>
 </div>

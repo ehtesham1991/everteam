@@ -17,14 +17,14 @@ export class ExcelsheetComponent implements OnInit {
   token: string;
   role: string;
   headerToken: string;
-  name: '';
-  age: '';
-  gender: '';
-  mobile: '';
-  email: '';
+  fileName: '';
+  fileType: '';
+  fileLocation: '';
+  fileLastModifiedOn: '';
+  fileModifiedBy: '';
   editedRowId: '';
   pageNumber: number = 1;
-  pageSize: number = 2;
+  pageSize: number = 30;
   totalPage: string;
 
   rowData: any;;
@@ -55,7 +55,7 @@ export class ExcelsheetComponent implements OnInit {
       if (Response.body != null && Response.body != undefined) {
         this.rowObj = [];
         for (let i = 0; i <= Response.body["rows"].length; i++) {
-          counter = { id: Response.body["rows"][i]["id"], name: Response.body["rows"][i]["name"], age: Response.body["rows"][i]["age"], gender: Response.body["rows"][i]["gender"], mobile: Response.body["rows"][i]["mobile"], email: Response.body["rows"][i]["email"] }
+          counter = { id: Response.body["rows"][i]["id"], fileName: Response.body["rows"][i]["fileName"], fileType: Response.body["rows"][i]["fileType"], fileLocation: Response.body["rows"][i]["fileLocation"], fileLastModifiedOn: Response.body["rows"][i]["fileLastModifiedOn"], fileModifiedBy: Response.body["rows"][i]["fileModifiedBy"] }
           this.rowObj.push(counter);
         }
       }
@@ -76,8 +76,8 @@ export class ExcelsheetComponent implements OnInit {
   }
 
   onAddRow() {
-    this._excelService.add(this.id, this.name, this.email, this.mobile, this.age, this.gender, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
-            this.totalPage = responsedata.headers.get('X-Total-Pages');
+    this._excelService.add(this.id, this.fileName, this.fileModifiedBy, this.fileLastModifiedOn, this.fileType, this.fileLocation, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
+      this.totalPage = responsedata.headers.get('X-Total-Pages');
       this.rowObj = [];
       this.rowObj = responsedata["rows"];
       this.getExcelData();
@@ -89,23 +89,30 @@ export class ExcelsheetComponent implements OnInit {
   }
 
   getDetailForId(rowId: string) {
+
     for (let i = 0; i <= this.rowObj.length; i++) {
       if (rowId == this.rowObj[i].id) {
-        this.name = this.rowObj[i].name;
-        this.age = this.rowObj[i].age;
-        this.gender = this.rowObj[i].gender;
-        this.mobile = this.rowObj[i].mobile;
-        this.email = this.rowObj[i].email;
+        this.fileName = this.rowObj[i].fileName;
+        this.fileType = this.rowObj[i].fileType;
+        this.fileLocation = this.rowObj[i].fileLocation;
+        this.fileLastModifiedOn = this.rowObj[i].fileLastModifiedOn;
+        this.fileModifiedBy = this.rowObj[i].fileModifiedBy;
         this.editedRowId = this.rowObj[i].id;
       }
     }
+  }
 
-
+  getDetailForId1(row: any) {
+    this.fileName = row.fileName;
+    this.fileType = row.fileType;
+    this.fileLocation = row.fileLocation;
+    this.fileLastModifiedOn = row.fileLastModifiedOn;
+    this.fileModifiedBy = row.fileModifiedBy;
+    this.editedRowId = row.id;
   }
 
   updateRow() {
-
-    this._excelService.update(this.id, this.editedRowId, this.name, this.email, this.mobile, this.age, this.gender, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
+    this._excelService.update(this.id, this.editedRowId, this.fileName, this.fileModifiedBy, this.fileLastModifiedOn, this.fileType, this.fileLocation, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
       this.rowObj = [];
       this.rowObj = responsedata["rows"];
     },
@@ -150,5 +157,10 @@ export class ExcelsheetComponent implements OnInit {
       this.pageNumber = parseInt(this.totalPage);
       this.getExcelData();
     }
+  }
+
+  logOut() {
+    sessionStorage.clear();
+    this._router.navigateByUrl('');
   }
 }

@@ -45,18 +45,18 @@ export class ExcelService {
     })
   }
 
-  add(id, name, email, mobile, age, gender, pageNumber, pageSize, token) {
+  add(id, fileName, fileModifiedBy, fileLastModifiedOn, fileType, fileLocation, pageNumber, pageSize, token) {
     let url = this.baseUrl;
     let conUrl = url.concat(id);
     let finalUrl = conUrl.concat('/rows');
     console.log('addrow-url', finalUrl);
 
     let data = {
-      "name": name,
-      "email": email,
-      "mobile": mobile,
-      "age": age,
-      "gender": gender
+      "fileName": fileName,
+      "fileType": fileType,
+      "fileLocation": fileLocation,
+      "fileLastModifiedOn": fileLastModifiedOn,
+      "fileModifiedBy": fileModifiedBy
     };
     return this.http.post(finalUrl, data, {
       headers: {
@@ -68,18 +68,18 @@ export class ExcelService {
     })
   }
 
-  update(id, editId, name, email, mobile, age, gender, pageNumber, pageSize, token) {
+  update(id, editId, fileName, fileModifiedBy, fileLastModifiedOn, fileType, fileLocation, pageNumber, pageSize, token) {
 
     let url = this.baseUrl;
     let conUrl = url.concat(id);
     let finalUrl = conUrl.concat('/rows/').concat(editId);
     console.log('update-row-url', finalUrl);
     let data = {
-      "name": name,
-      "email": email,
-      "mobile": mobile,
-      "age": age,
-      "gender": gender
+      "fileName": fileName,
+      "fileType": fileType,
+      "fileLocation": fileLocation,
+      "fileLastModifiedOn": fileLastModifiedOn,
+      "fileModifiedBy": fileModifiedBy
     };
     return this.http.put(finalUrl, data, {
       headers: {
