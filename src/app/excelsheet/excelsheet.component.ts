@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ExcelService } from '../Services/excel.service';
+import { HomeService } from '../Services/home.service';
 import { Observable } from 'rxjs';
 import { saveAs } from 'file-saver';
 
@@ -10,41 +12,29 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./excelsheet.component.css']
 })
 export class ExcelsheetComponent implements OnInit {
-  id:any;
-  rowObj:any =[];
-  token : string;
-  role : string;
-  headerToken : string;
-  gridApi : any;
-  columnApi : any;
-  rowSelection;
-  name : '';
+  id: any;
+  rowObj: any = [];
+  token: string;
+  role: string;
+  headerToken: string;
+  name: '';
   age: '';
-  gender : '';
-  mobile:'';
-  email:'';
-  editedRowId:'';
-  pageNumber : number = 1;
-  pageSize : number = 1;
-  totalPage : string;
+  gender: '';
+  mobile: '';
+  email: '';
+  editedRowId: '';
+  pageNumber: number = 1;
+  pageSize: number = 2;
+  totalPage: string;
 
-  columnDefs =[
-    { headerName: "Name", field: "name" , sortable : true , filter :true, editable : true},
-    { headerName: "Age", field: "age", sortable : true, filter :true,editable : true},
-    { headerName: "Gender", field: "gender", sortable : true, filter :true,editable : true},
-    { headerName: "Mobile", field: "mobile", sortable : true, filter :true,editable : true},
-    { headerName: "Email", field: "email", sortable : true, filter :true,editable : true}
-  ];
-
-  rowData : any;; 
+  rowData: any;;
 
 
-  constructor(private http: HttpClient, private _router: Router) {
-    
+  constructor(private http: HttpClient, private _router: Router, private _excelService: ExcelService, private _homeService: HomeService) {
+
     this.id = sessionStorage.getItem('fileId');
     console.log("ID is == >  " + this.id);
-    this.rowSelection = 'multiple';
-   }
+  }
 
   ngOnInit(): void {
     this.token = sessionStorage.getItem("token");
@@ -52,124 +42,55 @@ export class ExcelsheetComponent implements OnInit {
     this.headerToken = ("Bearer ").concat(this.token);
     this.pageNumber = 1;
     this.getExcelData();
+    this._homeService.userType(this.role);
   }
 
-  /*getExcelFile(){
-    let url = 'http://localhost:8080/api/excel-files/'.concat(this.id)
-    //  this.http.get<any>(url, {headers:headers, responseType: 'blob'});
-    this.http.get(url,{
-      headers: {
-       'Authorization': this.headerToken,
-        observe: 'response',
-        Accept : 'application/octet-stream'
-      },
-      responseType: 'blob',observe: 'response'
-     }).subscribe(Response => {
-        console.log("-----------------------------");
-        const fileName = Response.headers.get('File-Name');
-        const file = Response.body;
-        // saveAs(Response.body, fileName)
-        // console.log(Response)
-      });
-  }*/
 
-  getExcelData(){
-    let counter : any;
-let url = 'http://localhost:8080/api/excel-files/';
-let conUrl = url.concat(this.id);
-let finalUrl = conUrl.concat('/rows')
-
-console.log('get excel-row-url', finalUrl);
-      
-      this.http.get(finalUrl, {
-        headers: {
-          'page': this.pageNumber.toString(),
-          'size': this.pageSize.toString(),          
-          'Authorization': this.headerToken,
-        },
-        observe: 'response'
-      }).subscribe(Response => {
-        console.log("============== Row Response ==========")
-        this.totalPage = Response.headers.get('X-Total-Pages');
-        console.log('total-page', this.totalPage);
-        if(Response.body!=null && Response.body!= undefined){
-          this.rowObj = [];
-          ;
-        let responseLength = Object.keys(Response.body).length;     
+  getExcelData() {
+    let counter: any;
+    this._excelService.getData(this.id, this.pageNumber, this.pageSize, this.headerToken).subscribe(Response => {
+      console.log("============== Row Response ==========")
+      this.totalPage = Response.headers.get('X-Total-Pages');
+      console.log('total-page', this.totalPage);
+      if (Response.body != null && Response.body != undefined) {
+        this.rowObj = [];
         for (let i = 0; i <= Response.body["rows"].length; i++) {
-          counter = { id: Response.body["rows"][i]["id"], name: Response.body["rows"][i]["name"], age: Response.body["rows"][i]["age"], gender: Response.body["rows"][i]["gender"], mobile: Response.body["rows"][i]["mobile"],email: Response.body["rows"][i]["email"]}
-          
+          counter = { id: Response.body["rows"][i]["id"], name: Response.body["rows"][i]["name"], age: Response.body["rows"][i]["age"], gender: Response.body["rows"][i]["gender"], mobile: Response.body["rows"][i]["mobile"], email: Response.body["rows"][i]["email"] }
           this.rowObj.push(counter);
         }
-        }
-        // this.rowData = this.rowObj;
-      });
+      }
+    });
   }
 
 
-  deleteRow(rowId : string){
-    let counter : any;
-let url = 'http://localhost:8080/api/excel-files/';
-let conUrl = url.concat(this.id);
-let finalUrl = conUrl.concat('/rows/').concat(rowId);
-console.log("delete-row-url " + finalUrl);
-this.http.delete(finalUrl, {
-  headers: {
-    'page': this.pageNumber.toString(),
-    'size': this.pageSize.toString(),          
-    'Authorization': this.headerToken
-  }
-}).subscribe(Response => {
-  console.log("==============DELETE Row Response ==========")
-  // console.log(Response);
-  if(Response!=null && Response!= undefined){
-  let responseLength = Object.keys(Response).length;  
-  this.rowObj = [];   
-  // for (let i = 0; i <= responseLength; i++) {
-  //   counter = { id: Response["rows"][i]["id"], name: Response["rows"][i]["name"], age: Response["rows"][i]["age"], gender: Response["rows"][i]["gender"], mobile: Response["rows"][i]["mobile"],email: Response["rows"][i]["email"]}
-    
-    this.rowObj = Response["rows"];
-  
-  }
-// console.log()
-});
+  deleteRow(rowId: string) {
+    this._excelService.delete(this.id, rowId, this.pageNumber, this.pageSize, this.headerToken).subscribe(Response => {
+      console.log("==============DELETE Row Response ==========")
+      this.totalPage = Response.headers.get('X-Total-Pages');
+      if (Response != null && Response != undefined) {
+        this.rowObj = [];
+        this.rowObj = Response["rows"];
+        this.getExcelData();
+      }
+    });
   }
 
-  onAddRow(){
-    let counter : any;
-let url = 'http://localhost:8080/api/excel-files/';
-let conUrl = url.concat(this.id);
-let finalUrl = conUrl.concat('/rows');
-console.log('addrow-url', finalUrl);
+  onAddRow() {
+    this._excelService.add(this.id, this.name, this.email, this.mobile, this.age, this.gender, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
+            this.totalPage = responsedata.headers.get('X-Total-Pages');
+      this.rowObj = [];
+      this.rowObj = responsedata["rows"];
+      this.getExcelData();
+    },
+      err => {
+      }
+    );
 
-let data = {
-  "name": this.name,
-  "email": this.email,
-  "mobile": this.mobile,
-  "age": this.age,
-  "gender": this.gender
-};
-this.http.post(finalUrl,data, {
-  headers: {
-    'page': this.pageNumber.toString(),
-    'size': this.pageSize.toString(),       
-    'Authorization': this.headerToken
-  }
-})
-  .subscribe(responsedata => {
-    this.rowObj = [];
-      this.rowObj=responsedata["rows"];
-  },
-    err => {
-    }
-  );
-    
   }
 
-  getDetailForId(rowId : string){
-    for(let i = 0; i <= this.rowObj.length; i++){
-      if(rowId == this.rowObj[i].id){
-        console.log("data Found");
+  getDetailForId(rowId: string) {
+    for (let i = 0; i <= this.rowObj.length; i++) {
+      if (rowId == this.rowObj[i].id) {
         this.name = this.rowObj[i].name;
         this.age = this.rowObj[i].age;
         this.gender = this.rowObj[i].gender;
@@ -178,85 +99,56 @@ this.http.post(finalUrl,data, {
         this.editedRowId = this.rowObj[i].id;
       }
     }
-   
-    
+
+
   }
 
-  updateRow(){
- 
-    let url = 'http://localhost:8080/api/excel-files/';
-    let conUrl = url.concat(this.id);
-    let finalUrl = conUrl.concat('/rows/').concat(this.editedRowId);
-    console.log('update-row-url', finalUrl);
-    let data = {
-      "name": this.name,
-      "email": this.email,
-      "mobile": this.mobile,
-      "age": this.age,
-      "gender": this.gender
-    };
-    this.http.put(finalUrl,data, {
-      headers: {
-        'page': this.pageNumber.toString(),
-        'size': this.pageSize.toString(),     
-        'Authorization': this.headerToken
+  updateRow() {
+
+    this._excelService.update(this.id, this.editedRowId, this.name, this.email, this.mobile, this.age, this.gender, this.pageNumber, this.pageSize, this.headerToken).subscribe(responsedata => {
+      this.rowObj = [];
+      this.rowObj = responsedata["rows"];
+    },
+      err => {
       }
-    }).subscribe(responsedata => {
-        this.rowObj = [];
-          this.rowObj=responsedata["rows"];
-      },
-        err => {
-        }
-      );
+    );
   }
 
-  saveIntoDatabase(){
-    
-    let counter : any;
-let url = 'http://localhost:8080/api/excel-files/';
-let conUrl = url.concat(this.id);
-let finalUrl = conUrl.concat('/save');
-console.log('save-url', finalUrl);
+  saveIntoDatabase() {
+    this._excelService.save(this.id, this.headerToken).subscribe(responsedata => {
+      this._router.navigateByUrl('home');
+    },
+      err => {
+      }
+    );
 
-this.http.post(finalUrl,null, {
-  headers: {         
-    'Authorization': this.headerToken
-  }
-})
-  .subscribe(responsedata => {
-    this._router.navigateByUrl('home');
-  },
-    err => {
-    }
-  );
-    
   }
 
-  firstPage(){
-    if(this.pageNumber != 1) {
+  firstPage() {
+    if (this.pageNumber != 1) {
       this.pageNumber = 1;
       this.getExcelData();
     }
   }
 
-  nextPage(){
-    if(parseInt(this.totalPage) > this.pageNumber) {
-    this.pageNumber = this.pageNumber + 1;
-    this.getExcelData();
+  nextPage() {
+    if (parseInt(this.totalPage) > this.pageNumber) {
+      this.pageNumber = this.pageNumber + 1;
+      this.getExcelData();
     }
   }
-  
-  previosPage(){
-    if(this.pageNumber > 1) {
-    this.pageNumber = this.pageNumber - 1;
-    this.getExcelData();
+
+  previosPage() {
+    if (this.pageNumber > 1) {
+      this.pageNumber = this.pageNumber - 1;
+      this.getExcelData();
     }
   }
-  
-  lastPage(){
-  if(this.pageNumber != parseInt(this.totalPage)) {
-    this.pageNumber = parseInt(this.totalPage);
-    this.getExcelData();
+
+  lastPage() {
+    if (this.pageNumber != parseInt(this.totalPage)) {
+      this.pageNumber = parseInt(this.totalPage);
+      this.getExcelData();
     }
   }
 }

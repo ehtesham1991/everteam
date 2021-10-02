@@ -1,6 +1,12 @@
-<h3>Upload File</h3>
 
-<form [formGroup]="fileUploadForm" (ngSubmit)="onFormSubmit()">
+<div class="row">
+  <div class="col-sm-12 text-center margin-top-8">
+
+<h1>Upload File</h1>
+
+  </div>
+  </div>
+<form [formGroup]="fileUploadForm" (ngSubmit)="upload()">
     <div class="row">
         <div class="col-sm-12">
             <div>
@@ -8,21 +14,24 @@
             </div>
         </div>
 
-        <div class="col-sm-6 text-center">
+        <div class="col-sm-4 ">
 
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="customFile" name="myfile"
-                    (change)="onFileSelect($event)" #UploadFileInput>
+                    (change)="selectFile($event)" #UploadFileInput>
                 <label class="custom-file-label" for="customFile">{{fileInputLabel || 'Choose File'}}</label>
             </div>
 
         </div>
-        <div class="col-sm-6 text-center">
+        <div class="col-sm-1 text-center">
             <button class="btn btn-primary" type="submit">Upload</button>
         </div>
     </div>
 </form>
 
+
+<div class="row">
+  <div class="col-sm-6 text-center margin-top-8">
 <table class="table table-striped">
     <thead>
       <tr>
@@ -43,6 +52,9 @@
       </tr>
     </tbody>
   </table>
+  
+</div>
+</div>
 <br>
 <br>
   <table class="table table-dark" *ngIf="excelFlag == true">

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HomeService } from '../Services/home.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -20,7 +21,7 @@ export class HomeComponent implements OnInit {
   role : string;
   headerToken : string;
   constructor(private http: HttpClient,
-    private formBuilder: FormBuilder,private _router: Router) { }
+    private formBuilder: FormBuilder,private _router: Router, private _homeService: HomeService) { }
 
   ngOnInit(): void {
     this.token = sessionStorage.getItem("token");
@@ -31,9 +32,12 @@ export class HomeComponent implements OnInit {
     });
     this.fileObj =[];
     this.displayListOfExcels();
+    this._homeService.userType(this.role);
   }
 
-  onFileSelect(event) {
+  
+
+  selectFile(event) {
     let af = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -49,7 +53,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  onFormSubmit() {
+  upload() {
 
     if (!this.fileUploadForm.get('myfile').value) {
       alert('Please fill valid details!');
@@ -59,12 +63,7 @@ export class HomeComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.fileUploadForm.get('myfile').value);
 
-    this.http
-      .post<any>('http://localhost:8080/api/excel-files', formData, {
-        headers: {
-         'Authorization': this.headerToken
-        }
-      }).subscribe(response => {
+    this._homeService.uploadFile(this.headerToken,formData).subscribe(response => {
           this.uploadFileInput.nativeElement.value = "";
           this.fileInputLabel = undefined;
           this.fileObj =[];
@@ -77,11 +76,7 @@ export class HomeComponent implements OnInit {
 
   displayListOfExcels(){
     let counter : any;
-    let excelFileUrl = 'http://localhost:8080/api/excel-files'
-    this.http.get(excelFileUrl,{
-      headers: {
-       'Authorization': this.headerToken
-      }}).subscribe(Response => {
+    this._homeService.getExcelList(this.headerToken).subscribe(Response => {
       console.log(Response);
       if(Response!=null && Response!= undefined){
         let noOfFiles = Object.keys(Response).length;      
@@ -93,10 +88,7 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  onContinue(e, id: String) {
-      this.excelFlag = true;
-      console.log("ITEM Selected ==== > " + id);
-      sessionStorage.setItem('fileId', id.toString());
-      this._router.navigateByUrl('excelsheet');
+  onContinue(event,id: String) {
+    this._homeService.openFile(id);
   }
 }

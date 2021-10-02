@@ -200,6 +200,13 @@ border:none!important;
 	color:#085c89!important;
 }
 
+.text-left{
+	text-align:left!important;
+}
+.text-right{
+	text-align:right!important;
+}
+
 .rcorners1 {
   border-radius:5px!important;
   border: 1px solid #009ede;

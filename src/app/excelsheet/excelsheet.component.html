@@ -1,12 +1,19 @@
 <div class="clear"></div>
 <div class="container-fluid  mar-top-10">
   <div class="row">
-
-    
     <div class="col-md-12 ">
-      <div>
-                  <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#popUpModal">Add</button>
+      <h1>Preview File</h1>
       </div>
+    
+    <div class="col-md-12">
+      
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-2">
+        <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#popUpModal">Add</button>
+      </div>
+
+    </div>
         <div class="table-header-color table-responsive top-space">
           <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
             <thead>
@@ -27,8 +34,8 @@
                 <td style="text-align:center">{{a.mobile}}</td>
                 <td style="text-align:center">{{a.email}}</td>
                 <td style="text-align:center"><div class="col-sm-6 text-center">
-                  <button class="btn btn-primary" type="submit" (click)="getDetailForId(a.id)" data-toggle="modal" data-target="#popUpModalEdit">Edit</button>
-                  <button class="btn btn-primary" type="submit" (click)="deleteRow(a.id)" >Delete</button>
+                  <button class="btn btn-primary" type="submit" (click)="getDetailForId(a.id)" data-toggle="modal" data-target="#popUpModalEdit" style=" padding:5px;">Edit</button>
+                  <button class="btn btn-primary" type="submit" (click)="deleteRow(a.id)" style=" padding:5px;" >Delete</button>
               </div></td>
               </tr>
             </tbody>
@@ -128,7 +135,8 @@
       </div>
     </div>
   </div>
-  <div >
+  <div class="row">
+    <div class = "col-md-12 text-center">
     <div>
       <p>Page {{pageNumber}} of {{totalPage}}</p>
     </div>
@@ -136,6 +144,7 @@
     <button class="btn btn-primary" type="submit" (click)="nextPage()">Next Page</button>
     <button class="btn btn-primary" type="submit" (click)="previosPage()">Previous page</button>
     <button class="btn btn-primary" type="submit" (click)="lastPage()">Last page</button>
+  </div>
 </div>
 
 <br>
@@ -143,7 +152,7 @@
 
 <div class="col-md-12 ">
   <div>
-              <button class="btn btn-primary" type="submit" (click)="saveIntoDatabase()">Save</button>
+              <button class="btn btn-primary" [attr.disabled]="role == 'ROLE_READ' ? true : null" type="submit" (click)="saveIntoDatabase()">Save</button>
   </div>
 </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LoginService } from '../Services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -9,49 +10,39 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 })
 export class LoginComponent implements OnInit {
 
-  username : '';
+  username: '';
   password: '';
-  token : '';
-  role:'';
+  token: '';
+  role: '';
 
-  constructor(private http: HttpClient, private _router: Router) { }
+  constructor(private http: HttpClient, private _router: Router, private _loginService: LoginService) { }
 
   ngOnInit(): void {
   }
 
-  navigateToHome(){
-    
-    this._router.navigateByUrl('home');
+  navigateToHome() {
+    this._loginService.home();
   }
 
-  
-  login(){
-    console.log("name : " + this.username);
-    console.log("password : " + this.password);
-    let params = {
-      "username": this.username,
-      "password": this.password
-    };
-    let loginUrl = 'http://localhost:8080/auth/user/login';
-    this.http.post(loginUrl, params)
-      .subscribe(responsedata => {
-        if(responsedata["status"] == 202){
-          this.token = responsedata["data"]["token"];
-          this.role = responsedata["data"]["roles"];
-          sessionStorage.setItem("token", this.token);
-          sessionStorage.setItem("roles", this.role);
-    this._router.navigateByUrl('home');
-        }
-      },
-        err => {
-          alert("Invalid Credentials");
-        }
-      );
+
+  login() {
+    this._loginService.login(this.username, this.password).subscribe(responsedata => {
+      if (responsedata["status"] == 202) {
+        this.token = responsedata["data"]["token"];
+        this.role = responsedata["data"]["roles"];
+        sessionStorage.setItem("token", this.token);
+        sessionStorage.setItem("roles", this.role);
+        this._router.navigateByUrl('home');
+      }
+    },
+      err => {
+        alert("Invalid Credentials");
+      }
+    );
   }
 
-  register(){
-    
-    this._router.navigateByUrl('register');
+  register() {
+    this._loginService.register();
   }
 
 }
