@@ -72,7 +72,7 @@ export class ExcelService {
 
     let url = this.baseUrl;
     let conUrl = url.concat(id);
-    let finalUrl = conUrl.concat('/rows/').concat(editId);
+    let finalUrl = conUrl.concat('/rows/').concat(editId).concat('/update');
     console.log('update-row-url', finalUrl);
     let data = {
       "fileName": fileName,
@@ -81,7 +81,7 @@ export class ExcelService {
       "fileLastModifiedOn": fileLastModifiedOn,
       "fileModifiedBy": fileModifiedBy
     };
-    return this.http.put(finalUrl, data, {
+    return this.http.post(finalUrl, data, {
       headers: {
         'page': pageNumber.toString(),
         'size': pageSize.toString(),
