@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "MigrationTool"
+  "defaultProject": "MigrationTool",
+  "cli": {
+    "analytics": "f64baac9-90dd-48ae-a0a3-17c3f6bfaf31"
+  }
 }
